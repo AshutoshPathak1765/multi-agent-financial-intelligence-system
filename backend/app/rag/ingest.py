@@ -1,6 +1,7 @@
 from langchain_unstructured import UnstructuredLoader
 import glob
 import os
+from app.core.vector_db import insert_into_vector_db
 from pathlib import Path
 
 
@@ -14,6 +15,8 @@ def ingest_pdf(file_path: str):
         file_path=file_paths, chunking_strategy="by_title", include_orig_elements=True
     )
     docs = loader.load()
-    print("------docs-----")
-    print(len(docs))
-    print(docs[0].page_content)
+    db = insert_into_vector_db(docs=docs)
+    print("Inserted into vector db: ",db)
+    # print("------docs-----")
+    # print(len(docs))
+    # print(docs[1].page_content)

@@ -1,5 +1,8 @@
-def basic_node(state):
-    user_input = state["input"]
+from app.rag.retriever import retrieve_docs
 
+
+def basic_node(state):
+    query = state["input"]
+    docs = retrieve_docs(query=query)
     # Dummy logic (replace later with LLM)
-    return {"output": f"Processed: {user_input}"}
+    return {"output": f"Relevant data: {docs}"}
