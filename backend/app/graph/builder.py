@@ -18,6 +18,12 @@ def critic_router(state):
 
     return END
 
+def planner_router(state):
+    if state.get("out_of_scope", False):
+        return END
+
+    return "executor"
+
 
 def get_graph():
     graph = StateGraph(AgentState)
@@ -27,8 +33,8 @@ def get_graph():
     graph.add_node("critic", critic_node)
 
     graph.set_entry_point("planner")
-    graph.add_edge("planner", "executor")
+    graph.add_conditional_edges("planner", planner_router, {"executor": "executor", END: END})
     graph.add_edge("executor", "critic")
-    graph.add_conditional_edges("critic", critic_router, {"executor": "executor"})
+    graph.add_conditional_edges("critic", critic_router, {"executor": "executor",END: END})
 
     return graph.compile()

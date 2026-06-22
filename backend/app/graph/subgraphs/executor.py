@@ -50,7 +50,7 @@ graph.add_node("tools", tool_node)
 
 graph.set_entry_point("decision")
 
-graph.add_conditional_edges("decision", router, {"tools": "tools"})
+graph.add_conditional_edges("decision", router, {"tools": "tools",END: END})
 graph.add_edge("tools", "decision")
 
 executor_graph = graph.compile()

@@ -8,5 +8,6 @@ class AgentState(TypedDict):
     plan: str
     steps: int
     critic_feedback: str
+    out_of_scope: bool
     critic_attempts: int
     final_output: str

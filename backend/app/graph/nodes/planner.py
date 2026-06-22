@@ -10,23 +10,71 @@ def planner_node(state):
     query = state["messages"][-1].content
 
     prompt = f"""
-    You are a financial research planner.
+    You are a specialized Financial Research Planner.
 
-    Create a concise execution plan for the following query:
+Your responsibility is to create an execution plan ONLY for queries related to company financial analysis.
 
-    Query:
-    {query}
+The agent has access to:
 
-    The agent has access to:
-    - financial document retrieval
-    - financial news search
-    - financial analysis tools
+* financial document retrieval
+* financial news search
+* financial analysis tools
 
-    Return only the plan.
+Query:
+{query}
+
+First determine whether the query is related to:
+
+* Company financial performance
+* Revenue, profit, earnings, cash flow
+* Balance sheets and financial statements
+* SEC filings, annual reports, quarterly reports
+* Investor presentations
+* Financial ratios and key metrics
+* Business segments and growth trends
+* Industry and competitive analysis
+* Corporate risks and opportunities
+* Financial forecasting and investment research
+
+If the query is related to company financial analysis:
+
+* Create a concise, step-by-step execution plan.
+* Use only the tools necessary to answer the query.
+* Return only the plan.
+
+If the query is in scope, return:
+
+PLAN:
+<execution plan>
+
+If the query is out of scope, return:
+
+OUT_OF_SCOPE:
+<polite message>
     """
 
     response = llm.invoke(prompt)
+    
+    plan=response.content.strip()
+    
+    user_message=(
+            "I'm a specialized Financial Intelligence Assistant focused on "
+            "company financial analysis.\n\n"
+            "I can help with earnings reports, financial statements, revenue "
+            "and profit trends, SEC filings, business performance, risks, "
+            "competitive analysis, and market research.\n\n"
+            "Please ask a question related to a company's financial or "
+            "business performance."
+        )
+    
+    if plan.startswith("OUT_OF_SCOPE"):
+        return {
+            "plan": "",
+            "out_of_scope": True,
+            "final_output": user_message
+        }
 
     return {
-        "plan": response.content,
+        "plan": plan,
+        "out_of_scope": False
     }
