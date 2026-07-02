@@ -33,6 +33,7 @@ class MessageRepository:
         result = await db.execute(
             select(Message)
             .where(Message.session_id == session_id)
+            .order_by(Message.created_at.asc())
         )
 
         return result.scalars().all()
