@@ -1,5 +1,5 @@
 import { MobileSidebar } from "./MobileSidebar";
-import { UserButton,Show,SignInButton } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 
 export function AppHeader() {
   return (
@@ -17,12 +17,7 @@ export function AppHeader() {
     </p>
   </div>
   </div>
-  <Show when="signed-in">
-    <UserButton />
-  </Show>
-  <Show when="signed-out">
-    <SignInButton />
-  </Show>
+  <UserButton />
   </header>
   );
 }
