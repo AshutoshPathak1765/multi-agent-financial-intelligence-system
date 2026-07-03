@@ -18,7 +18,9 @@ class SessionRepository:
         )
 
         db.add(session)
-        await db.commit()
+        # Send INSERT to PostgreSQL without committing
+        await db.flush()
+        # Populate generated values (UUID, timestamps, etc.)
         await db.refresh(session)
 
         return session

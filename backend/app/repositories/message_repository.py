@@ -20,9 +20,11 @@ class MessageRepository:
         )
 
         db.add(message)
-        await db.commit()
+       # Send INSERT to PostgreSQL without committing
+        await db.flush()
+       # Populate generated values (UUID, timestamps, etc.)
         await db.refresh(message)
-
+        
         return message
 
     @staticmethod

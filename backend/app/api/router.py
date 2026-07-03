@@ -6,6 +6,10 @@ from app.api.session_routes import router as session_router
 
 router = APIRouter()
 
+@router.get("/health", tags=["Health"])
+async def health_check():
+    return {"status": "ok"}
+
 router.include_router(
     session_router,
     tags=["Sessions"],

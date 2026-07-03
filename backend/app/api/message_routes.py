@@ -1,5 +1,5 @@
 from fastapi import APIRouter,Depends
-from app.schemas.message import CreateMessageRequest, MessageResponse
+from app.schemas.api.message import CreateMessageRequest, MessageResponse
 from app.services.message_service import MessageService
 from app.db.dependencies import get_db
 from sqlalchemy.ext.asyncio import AsyncSession

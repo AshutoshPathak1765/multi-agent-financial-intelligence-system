@@ -12,12 +12,14 @@ class MessageService:
         role: str,
         content: str,
     ):
-        return await MessageRepository.create_message(
+        message = await MessageRepository.create_message(
             db=db,
             session_id=session_id,
             role=role,
             content=content,
         )
+        await db.commit()
+        return message
 
     @staticmethod
     async def get_messages(

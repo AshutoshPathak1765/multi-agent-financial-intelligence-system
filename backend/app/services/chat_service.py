@@ -1,8 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.services.langgraph_service import LangGraphService
 from app.services.message_service import MessageService
-
+from app.services.history_service import HistoryService
+from langchain_core.messages import HumanMessage
+from app.core.constants import MessageRole
 
 class ChatService:
 
@@ -16,23 +17,25 @@ class ChatService:
         await MessageService.create_message(
             db=db,
             session_id=session_id,
-            role="user",
+            role=MessageRole.USER.value,
             content=message,
+        )
+        
+        # Load conversation history
+        history = await HistoryService.get_history(
+            db=db,
+            session_id=session_id,
         )
 
         # Run LangGraph
-        result = await LangGraphService.invoke(
-            message=message,
-            session_id=session_id,
-        )
+        result = await LangGraphService.invoke(messages=history)
 
-        response = result["response"]
-        # Save AI response
+        # Save assistant response
         await MessageService.create_message(
             db=db,
             session_id=session_id,
-            role="assistant",
-            content=response,
+            role=MessageRole.ASSISTANT.value,
+            content=result.response,
         )
 
-        return response
+        return result

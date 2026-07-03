@@ -9,11 +9,13 @@ class SessionService:
         user_id: str,
         title: str,
     ):
-        return await SessionRepository.create_session(
+        session = await SessionRepository.create_session(
             db=db,
             user_id=user_id,
             title=title,
         )
+        await db.commit()
+        return session
 
     @staticmethod
     async def get_sessions(

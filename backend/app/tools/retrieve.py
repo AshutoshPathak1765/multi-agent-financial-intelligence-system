@@ -7,4 +7,7 @@ def retrieve_tool(query: str):
     """Retrieve relevant financial report excerpts and company filing data for a given query."""
 
     docs = retrieve_docs(query)
-    return docs
+    return "\n\n".join(
+        doc.page_content
+        for doc in docs[:3]
+    )

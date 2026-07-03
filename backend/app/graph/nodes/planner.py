@@ -1,5 +1,6 @@
 from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
+from app.schemas.internal.planner import PlannerResponse
 
 load_dotenv()
 
@@ -10,71 +11,45 @@ def planner_node(state):
     query = state["messages"][-1].content
 
     prompt = f"""
-    You are a specialized Financial Research Planner.
+You are a specialized Financial Research Planner.
 
-Your responsibility is to create an execution plan ONLY for queries related to company financial analysis.
+Your responsibility is to create an execution plan ONLY for company financial analysis queries.
 
-The agent has access to:
+Available information sources:
 
-* financial document retrieval
-* financial news search
-* financial analysis tools
+• rag
+  - Use ONLY for questions about the uploaded Sun Life documents.
 
-Query:
+• search
+  - Use for public companies such as Apple, Microsoft, Tesla, NVIDIA, Amazon, Google, etc.
+
+• both
+  - Use when the answer requires both the uploaded Sun Life documents and recent public financial information.
+
+• none
+  - Use when the question is NOT related to company financial analysis.
+
+User Query:
 {query}
 
-First determine whether the query is related to:
+Instructions:
 
-* Company financial performance
-* Revenue, profit, earnings, cash flow
-* Balance sheets and financial statements
-* SEC filings, annual reports, quarterly reports
-* Investor presentations
-* Financial ratios and key metrics
-* Business segments and growth trends
-* Industry and competitive analysis
-* Corporate risks and opportunities
-* Financial forecasting and investment research
+1. Determine whether the query is related to company financial analysis.
+2. If it is related:
+   - Set out_of_scope to false.
+   - Generate a concise execution plan.
+   - Select the appropriate tool_strategy ("rag", "search", or "both").
+   - Leave final_output as null.
 
-If the query is related to company financial analysis:
-
-* Create a concise, step-by-step execution plan.
-* Use only the tools necessary to answer the query.
-* Return only the plan.
-
-If the query is in scope, return:
-
-PLAN:
-<execution plan>
-
-If the query is out of scope, return:
-
-OUT_OF_SCOPE:
-<polite message>
-    """
-
-    response = llm.invoke(prompt)
+3. If it is NOT related:
+   - Set out_of_scope to true.
+   - Set tool_strategy to "none".
+   - Set plan to an empty string.
+   - Set final_output to a short, polite message explaining that you only assist with company financial analysis and related financial topics.
+"""
     
-    plan=response.content.strip()
+    structured_llm = llm.with_structured_output(PlannerResponse)
     
-    user_message=(
-            "I'm a specialized Financial Intelligence Assistant focused on "
-            "company financial analysis.\n\n"
-            "I can help with earnings reports, financial statements, revenue "
-            "and profit trends, SEC filings, business performance, risks, "
-            "competitive analysis, and market research.\n\n"
-            "Please ask a question related to a company's financial or "
-            "business performance."
-        )
-    
-    if plan.startswith("OUT_OF_SCOPE"):
-        return {
-            "plan": "",
-            "out_of_scope": True,
-            "final_output": user_message
-        }
-
-    return {
-        "plan": plan,
-        "out_of_scope": False
-    }
+    response = structured_llm.invoke(prompt)
+    print(response.model_dump())
+    return response.model_dump()

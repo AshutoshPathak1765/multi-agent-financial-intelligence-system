@@ -1,7 +1,7 @@
 from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
 
-from app.schemas.critic import CriticResponse
+from app.schemas.api.critic import CriticResponse
 
 load_dotenv()
 
