@@ -37,3 +37,16 @@ class SessionRepository:
         )
 
         return result.scalars().all()
+    
+    @staticmethod
+    async def get_session_by_id(
+        db: AsyncSession,
+        session_id: str,
+    ):
+        result = await db.execute(
+            select(ChatSession).where(
+                ChatSession.id == session_id
+            )
+        )
+
+        return result.scalar_one_or_none()
