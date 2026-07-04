@@ -8,7 +8,7 @@ from app.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/sessions",tags=["Sessions"])
 
-@router.post("/")
+@router.post("")
 async def create_session(
     payload: CreateSessionRequest,
     current_user: CurrentUser = Depends(get_current_user),
@@ -22,7 +22,7 @@ async def create_session(
 
     return session
 
-@router.get("/")
+@router.get("")
 async def get_sessions(
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),

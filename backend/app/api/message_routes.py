@@ -7,7 +7,7 @@ from app.auth.dependencies import get_current_user
 from sqlalchemy.ext.asyncio import AsyncSession
 router = APIRouter(prefix="/messages",tags=["Messages"],)
 
-@router.post("/",response_model=MessageResponse)
+@router.post("",response_model=MessageResponse)
 async def create_message(payload:CreateMessageRequest,
     current_user: CurrentUser = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)):

@@ -13,7 +13,6 @@
     "@clerk/themes": "^2.4.57",
     "@clerk/ui": "^1.21.0",
     "@tanstack/react-query": "^5.101.0",
-    "axios": "^1.18.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.21.0",

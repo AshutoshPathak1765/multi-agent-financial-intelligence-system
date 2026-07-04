@@ -1,23 +1,27 @@
+"use client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { NewChatButton } from "@/components/session/NewChatButton";
 import { SessionCard } from "@/components/session/SessionCard";
-
-const sessions = [
-  {
-    title: "Tesla Revenue Analysis",
-    updatedAt: "2h ago",
-  },
-  {
-    title: "Apple Earnings Report",
-    updatedAt: "Yesterday",
-  },
-  {
-    title: "Nvidia Growth Trends",
-    updatedAt: "2 days ago",
-  },
-];
+import { useSessions } from "@/hooks/useSessions";
 
 export function AppSidebar() {
+  const { sessionsQuery } = useSessions();
+ 
+  if (sessionsQuery.isLoading) {
+    return (
+        <aside className="hidden md:flex w-72 border-r border-zinc-800 bg-zinc-900">
+            Loading...
+        </aside>
+    );
+}
+
+if (sessionsQuery.error) {
+    return (
+        <aside className="hidden md:flex w-72 border-r border-zinc-800 bg-zinc-900">
+            Failed to load sessions.
+        </aside>
+    );
+}
   return (
     <aside className="hidden md:flex w-72 border-r border-zinc-800 bg-zinc-900 flex-col">
       <div className="p-4">
@@ -30,13 +34,13 @@ export function AppSidebar() {
     </div>
       <ScrollArea className="flex-1 px-4">
         <div className="space-y-2 pb-4">
-          {sessions.map((session) => (
-            <SessionCard
-              key={session.title}
-              title={session.title}
-              updatedAt={session.updatedAt}
-            />
-          ))}
+         {sessionsQuery.data?.map((session) => (
+          <SessionCard
+        key={session.id}
+        title={session.title}
+        updatedAt={new Date(session.created_at).toLocaleDateString()}
+        />
+      ))}
         </div>
       </ScrollArea>
       <div className="border-t border-zinc-800 p-4">

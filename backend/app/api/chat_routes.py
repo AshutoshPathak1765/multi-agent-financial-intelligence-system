@@ -9,7 +9,7 @@ from app.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/chat",tags=["Chat"])
 
-@router.post("/", response_model=ChatResponse)
+@router.post("", response_model=ChatResponse)
 async def chat(
     request: ChatRequest,
     current_user: CurrentUser = Depends(get_current_user),
