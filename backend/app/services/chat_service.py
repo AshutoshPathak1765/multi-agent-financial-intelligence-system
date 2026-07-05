@@ -13,7 +13,7 @@ class ChatService:
         session_id: str,
         message: str,
     ):
-        async with db.begin():    
+        try:    
             # Save the user's message
             await MessageService.create_message(
                 db=db,
@@ -38,5 +38,8 @@ class ChatService:
                 role=MessageRole.ASSISTANT.value,
                 content=result.response,
             )
-
-            return result
+            await db.commit()
+        except Exception:
+            await db.rollback()
+            raise
+        return result
