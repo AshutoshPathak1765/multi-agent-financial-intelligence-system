@@ -18,7 +18,6 @@ class MessageService:
             role=role,
             content=content,
         )
-        await db.commit()
         return message
 
     @staticmethod

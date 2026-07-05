@@ -13,29 +13,30 @@ class ChatService:
         session_id: str,
         message: str,
     ):
-        # Save the user's message
-        await MessageService.create_message(
-            db=db,
-            session_id=session_id,
-            role=MessageRole.USER.value,
-            content=message,
-        )
-        
-        # Load conversation history
-        history = await HistoryService.get_history(
-            db=db,
-            session_id=session_id,
-        )
+        async with db.begin():    
+            # Save the user's message
+            await MessageService.create_message(
+                db=db,
+                session_id=session_id,
+                role=MessageRole.USER.value,
+                content=message,
+            )
+            
+            # Load conversation history
+            history = await HistoryService.get_history(
+                db=db,
+                session_id=session_id,
+            )
 
-        # Run LangGraph
-        result = await LangGraphService.invoke(messages=history)
+            # Run LangGraph
+            result = await LangGraphService.invoke(messages=history)
 
-        # Save assistant response
-        await MessageService.create_message(
-            db=db,
-            session_id=session_id,
-            role=MessageRole.ASSISTANT.value,
-            content=result.response,
-        )
+            # Save assistant response
+            await MessageService.create_message(
+                db=db,
+                session_id=session_id,
+                role=MessageRole.ASSISTANT.value,
+                content=result.response,
+            )
 
-        return result
+            return result
