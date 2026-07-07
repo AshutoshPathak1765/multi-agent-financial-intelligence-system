@@ -6,6 +6,7 @@ import {
 import { Card } from "@/components/ui/card";
 
 import { ExecutionDetails } from "./ExecutionDetails";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface ChatMessageProps {
   role: "user" | "assistant";
@@ -43,9 +44,15 @@ export function ChatMessage({
   `}
 >
   <div className="max-w-3xl">
-    <p className="leading-7">
-      {content}
-    </p>
+    <div className="leading-7">
+  {isUser ? (
+    content
+  ) : (
+    <MarkdownRenderer
+      content={content}
+    />
+  )}
+</div>
   </div>
 
   {!isUser && (

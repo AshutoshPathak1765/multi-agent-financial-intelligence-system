@@ -3,16 +3,28 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { ChatMessage } from "./ChatMessage";
 import { EmptyState } from "./EmptyState";
-import { useParams } from "next/navigation";
-import { useMessages } from "@/hooks/useMessages";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
+import type { MessageResponse } from "@/lib/api/types";
+
+interface ChatWindowProps {
+    messagesQuery: UseQueryResult<MessageResponse[], Error>;
+    isThinking: boolean;
+}
 
 
-export function ChatWindow() {
-  const params = useParams();
+export function ChatWindow({
+    messagesQuery,
+    isThinking,
+}: ChatWindowProps) {
 
-  const sessionId = params.sessionId as string;
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { messagesQuery } = useMessages(sessionId);
+  useEffect(() => {
+  bottomRef.current?.scrollIntoView({
+    behavior: messagesQuery.data?.length ? "smooth" : "auto"
+  });
+}, [messagesQuery.data?.length, isThinking]);
 
   if (messagesQuery.isLoading) {
   return <div>Loading...</div>;
@@ -22,15 +34,16 @@ if (messagesQuery.error) {
   return <div>Failed to load messages.</div>;
 }
 
-if (!messagesQuery.data?.length) {
+if (!messagesQuery.data?.length && !isThinking) {
     return <EmptyState />;
 }
   return (
-    <ScrollArea className="flex-1">
+    <div className="flex-1 min-h-0">
+    <ScrollArea className="h-full">
       <div className="mx-auto w-full max-w-4xl px-6 py-8">
         <div className="space-y-6">
           {
-            messagesQuery.data.map((message) => (
+            messagesQuery.data?.map((message) => (
               <ChatMessage
                   key={message.id}
                   role={message.role}
@@ -38,8 +51,17 @@ if (!messagesQuery.data?.length) {
               />
           ))
           }
+          {
+          isThinking && (
+            <ChatMessage
+            role="assistant"
+            content="Thinking..."
+          />
+      )}
+      <div ref={bottomRef} />
         </div>
       </div>
     </ScrollArea>
+    </div>
   );
 }

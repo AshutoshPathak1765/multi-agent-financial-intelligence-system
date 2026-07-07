@@ -3,9 +3,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { NewChatButton } from "@/components/session/NewChatButton";
 import { SessionCard } from "@/components/session/SessionCard";
 import { useSessions } from "@/hooks/useSessions";
+import { usePathname, useRouter } from "next/navigation";
 
 export function AppSidebar() {
   const { sessionsQuery } = useSessions();
+  const router = useRouter();
+  const pathname = usePathname();
  
   if (sessionsQuery.isLoading) {
     return (
@@ -23,7 +26,7 @@ if (sessionsQuery.error) {
     );
 }
   return (
-    <aside className="hidden md:flex w-72 border-r border-zinc-800 bg-zinc-900 flex-col">
+    <aside className="hidden md:flex w-72 min-h-0 flex-col border-r border-zinc-800 bg-zinc-900">
       <div className="p-4">
         <NewChatButton />
       </div>
@@ -32,17 +35,22 @@ if (sessionsQuery.error) {
     Recent Chats
     </p>
     </div>
-      <ScrollArea className="flex-1 px-4">
+    <div className="flex-1 min-h-0">
+      <ScrollArea className="h-full px-4">
         <div className="space-y-2 pb-4">
          {sessionsQuery.data?.map((session) => (
           <SessionCard
-        key={session.id}
-        title={session.title}
-        updatedAt={new Date(session.created_at).toLocaleDateString()}
+          key={session.id}
+          id={session.id}
+          title={session.title}
+          updatedAt={new Date(session.created_at).toLocaleDateString()}
+          isActive={pathname === `/chat/${session.id}`}
+          onClick={() => router.push(`/chat/${session.id}`)}
         />
       ))}
         </div>
       </ScrollArea>
+      </div>
       <div className="border-t border-zinc-800 p-4">
     <div className="text-sm font-medium">
       Ashutosh

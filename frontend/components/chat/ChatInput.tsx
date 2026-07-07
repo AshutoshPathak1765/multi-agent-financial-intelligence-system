@@ -5,16 +5,24 @@ import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { useParams } from "next/navigation";
-import { useChat } from "@/hooks/useChat";
+import { UseMutationResult } from "@tanstack/react-query";
+import type { ChatRequest, ChatResponse } from "@/lib/api/types";
 import { useState } from "react";
 
-export function ChatInput() {
-  const params = useParams();
-  const sessionId = params?.sessionId as string;
-  console.log("params:", params);
-  console.log("sessionId:", sessionId);
-  const { chatMutation } = useChat(sessionId);
+interface ChatInputProps {
+  sessionId: string;
+  chatMutation: UseMutationResult<
+    ChatResponse,
+    Error,
+    ChatRequest
+  >;
+}
+
+export function ChatInput({
+  sessionId,
+  chatMutation,
+}: ChatInputProps) {
+
   const [message, setMessage] = useState("");
 
   const handleSubmit = () => {
@@ -25,7 +33,7 @@ export function ChatInput() {
     }
 
   chatMutation.mutate({
-    session_id: sessionId as string,
+    session_id: sessionId,
     message: trimmedMessage,
   },
 {
@@ -35,6 +43,15 @@ export function ChatInput() {
 });
 };
 
+const handleKeyDown = (
+  e: React.KeyboardEvent<HTMLTextAreaElement>
+) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    handleSubmit();
+  }
+};
+
   return (
     <div className="border-t border-zinc-800 p-4">
       <div className="mx-auto max-w-4xl">
@@ -42,8 +59,10 @@ export function ChatInput() {
           <Textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-            placeholder="Ask about earnings reports, quarterly filings, revenue growth..."
-            className="
+          onKeyDown={handleKeyDown}
+          disabled={chatMutation.isPending}
+          placeholder="Ask about earnings reports, quarterly filings, revenue growth..."
+          className="
               min-h-60
               max-h-200
               resize-none
