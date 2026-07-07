@@ -6,6 +6,7 @@ import { EmptyState } from "./EmptyState";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import type { MessageResponse } from "@/lib/api/types";
+import { ThinkingMessage } from "./ThinkingMessage";
 
 interface ChatWindowProps {
     messagesQuery: UseQueryResult<MessageResponse[], Error>;
@@ -51,13 +52,7 @@ if (!messagesQuery.data?.length && !isThinking) {
               />
           ))
           }
-          {
-          isThinking && (
-            <ChatMessage
-            role="assistant"
-            content="Thinking..."
-          />
-      )}
+          {isThinking && <ThinkingMessage />}
       <div ref={bottomRef} />
         </div>
       </div>

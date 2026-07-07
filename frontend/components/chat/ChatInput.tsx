@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { UseMutationResult } from "@tanstack/react-query";
 import type { ChatRequest, ChatResponse } from "@/lib/api/types";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ChatInputProps {
   sessionId: string;
@@ -24,6 +24,7 @@ export function ChatInput({
 }: ChatInputProps) {
 
   const [message, setMessage] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = () => {
     const trimmedMessage = message.trim();
@@ -52,30 +53,55 @@ const handleKeyDown = (
   }
 };
 
+useEffect(() => {
+  const textarea = textareaRef.current;
+
+  if (!textarea) {
+    return;
+  }
+
+  textarea.style.height = "0px";
+
+  const scrollHeight = textarea.scrollHeight;
+
+  textarea.style.height =
+    Math.min(scrollHeight, 200) + "px";
+}, [message]);
+
   return (
     <div className="border-t border-zinc-800 p-4">
       <div className="mx-auto max-w-4xl">
-        <Card className="bg-zinc-900 border-zinc-800 p-3">
+       <Card className="border-zinc-800 bg-zinc-900 p-3">
+        <div className="relative">
           <Textarea
+          ref={textareaRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={chatMutation.isPending}
-          placeholder="Ask about earnings reports, quarterly filings, revenue growth..."
+          placeholder="Ask about a company or financial report..."
           className="
-              min-h-60
-              max-h-200
+              min-h-52px
+              max-h-200px
+              overflow-y-auto
               resize-none
               border-0
+              pr-14
               bg-transparent
               focus-visible:ring-0
             "
           />
-
-          <div className="mt-3 flex justify-end">
             <Button size="icon" 
             onClick={handleSubmit}
-            disabled={chatMutation.isPending}>
+            disabled={chatMutation.isPending}
+             className="
+              absolute
+              right-3
+              top-1/2
+              -translate-y-1/2
+              rounded-full
+            "
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>
