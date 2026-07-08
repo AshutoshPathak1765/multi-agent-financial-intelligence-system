@@ -12,7 +12,7 @@ export function AppSidebar() {
  
   if (sessionsQuery.isLoading) {
     return (
-        <aside className="hidden md:flex w-72 border-r border-zinc-800 bg-zinc-900">
+        <aside className="hidden md:flex w-64 border-r border-zinc-800 bg-zinc-900">
             Loading...
         </aside>
     );
@@ -20,13 +20,13 @@ export function AppSidebar() {
 
 if (sessionsQuery.error) {
     return (
-        <aside className="hidden md:flex w-72 border-r border-zinc-800 bg-zinc-900">
+        <aside className="hidden md:flex w-64 border-r border-zinc-800 bg-zinc-900">
             Failed to load sessions.
         </aside>
     );
 }
   return (
-    <aside className="hidden md:flex w-72 min-h-0 flex-col border-r border-zinc-800 bg-zinc-900">
+    <aside className="hidden md:flex w-64 min-h-0 flex-col border-r border-zinc-800 bg-zinc-900">
       <div className="p-4">
         <NewChatButton />
       </div>

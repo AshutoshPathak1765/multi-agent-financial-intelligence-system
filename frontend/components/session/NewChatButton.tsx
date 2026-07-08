@@ -22,9 +22,24 @@ export function NewChatButton() {
 
   return (
     <Button
-      className="w-full justify-start gap-2"
       size="lg"
-      onClick={handleClick}
+  onClick={handleClick}
+  className="
+    h-11
+    w-full
+    justify-start
+    gap-2
+    rounded-xl
+    border
+    border-zinc-700
+    bg-zinc-100
+    text-zinc-900
+    transition-all
+    duration-200
+    hover:scale-[1.01]
+    hover:bg-white
+    active:scale-[0.99]
+  "
     >
       <Plus size={16} />
       {

@@ -17,19 +17,19 @@ export function SessionCard({
   return (
     <Card onClick={onClick} className={`
     cursor-pointer
-    p-3
-    transition-colors
+    p-4
+    transition-all duration-200
     ${
       isActive
-        ? "bg-zinc-800 border-zinc-700"
-        : "hover:bg-zinc-800"
+        ? "bg-zinc-800/80 border-zinc-600"
+        : "hover:bg-zinc-800/60 hover:border-zinc-700"
     }
   `}>
-      <p className="font-medium text-sm truncate">
+      <p className="truncate text-sm font-medium">
         {title}
       </p>
 
-      <p className="text-xs text-muted-foreground mt-1">
+      <p className="mt-2 text-xs text-zinc-500">
         {updatedAt}
       </p>
     </Card>

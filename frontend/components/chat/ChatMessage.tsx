@@ -5,7 +5,7 @@ import {
 
 import { Card } from "@/components/ui/card";
 
-import { ExecutionDetails } from "./ExecutionDetails";
+// import { ExecutionDetails } from "./ExecutionDetails";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface ChatMessageProps {
@@ -21,44 +21,59 @@ export function ChatMessage({
 
   return (
     <div
-      className={`flex gap-3 ${
-        isUser
-          ? "justify-end"
-          : "justify-start"
-      }`}
-    >
-      {!isUser && (
-        <Avatar>
-          <AvatarFallback>AI</AvatarFallback>
-        </Avatar>
-      )}
-
-     <Card
-  className={`
-    max-w-3xl p-4
-    ${
-      isUser
-        ? "bg-emerald-600 text-white border-emerald-600"
-        : "bg-zinc-900 border-zinc-800"
-    }
-  `}
+  className={`flex gap-4 ${
+    isUser ? "justify-end" : "justify-start"
+  }`}
 >
-  <div className="max-w-3xl">
-    <div className="leading-7">
-  {isUser ? (
-    content
+  {!isUser ? (
+    <>
+      <Avatar>
+        <AvatarFallback className="bg-emerald-500 text-white font-semibold">
+          FI
+        </AvatarFallback>
+      </Avatar>
+
+      <div className="flex items-center gap-2">
+        <p className="text-sm font-semibold">
+          Financial Intelligence
+        </p>
+        <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs text-emerald-400">
+        AI
+    </span>
+    </div>  
+
+        <Card
+          className="
+            max-w-5xl
+            rounded-2xl
+            border
+            border-zinc-800
+            bg-zinc-900
+            p-5
+          "
+        >
+          <div className="leading-7">
+            <MarkdownRenderer content={content} />
+          </div>
+        </Card>
+    </>
   ) : (
-    <MarkdownRenderer
-      content={content}
-    />
+    <Card
+      className="
+        max-w-5xl
+        rounded-2xl
+        border
+        border-emerald-600
+        bg-emerald-600
+        p-5
+        text-white
+      "
+    >
+      <div className="leading-7">
+        {content}
+      </div>
+    </Card>
   )}
 </div>
-  </div>
-
-  {!isUser && (
-    <ExecutionDetails />
-  )}
-  </Card>
-    </div>
   );
 }

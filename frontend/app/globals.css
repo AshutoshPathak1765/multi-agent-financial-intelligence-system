@@ -117,14 +117,43 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(63 63 70);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(82 82 91);
+}
+
+:focus-visible {
+  transition: all 0.2s ease;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgb(16 185 129 / 0.35);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
-  }
+  @apply bg-background text-foreground antialiased;
+}
   html {
-    @apply font-sans;
-  }
+  @apply font-sans scroll-smooth;
+}
 }
