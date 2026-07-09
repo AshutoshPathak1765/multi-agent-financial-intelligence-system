@@ -32,16 +32,6 @@ export function ChatMessage({
           FI
         </AvatarFallback>
       </Avatar>
-
-      <div className="flex items-center gap-2">
-        <p className="text-sm font-semibold">
-          Financial Intelligence
-        </p>
-        <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs text-emerald-400">
-        AI
-    </span>
-    </div>  
-
         <Card
           className="
             max-w-5xl

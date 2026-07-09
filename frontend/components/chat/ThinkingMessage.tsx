@@ -10,12 +10,14 @@ interface ThinkingMessageProps {
 }
 
 export function ThinkingMessage({
-  status = "Analyzing financial information...",
+  status = "Thinking...",
 }: ThinkingMessageProps) {
   return (
     <div className="flex gap-4">
       <Avatar>
-        <AvatarFallback>AI</AvatarFallback>
+       <AvatarFallback className="bg-emerald-500 text-white font-semibold">
+        FI
+      </AvatarFallback>
       </Avatar>
 
       <Card
@@ -30,9 +32,9 @@ export function ThinkingMessage({
 >
         <div className="space-y-3">
         <div className="flex gap-1">
-          <div className="h-2 w-2 rounded-full bg-emerald-400" />
-          <div className="h-2 w-2 rounded-full bg-emerald-400" />
-          <div className="h-2 w-2 rounded-full bg-emerald-400" />
+          <div className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.3s]" />
+          <div className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.15s]" />
+          <div className="h-2 w-2 rounded-full bg-emerald-400 animate-bounce" />
         </div>
 
         <p className="text-sm text-zinc-400">

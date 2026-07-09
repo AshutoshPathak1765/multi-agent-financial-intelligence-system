@@ -7,6 +7,7 @@ import type { UseQueryResult } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import type { MessageResponse } from "@/lib/api/types";
 import { ThinkingMessage } from "./ThinkingMessage";
+import { ChatSkeleton } from "./ChatSkeleton";
 
 interface ChatWindowProps {
     messagesQuery: UseQueryResult<MessageResponse[], Error>;
@@ -28,7 +29,7 @@ export function ChatWindow({
 }, [messagesQuery.data?.length, isThinking]);
 
   if (messagesQuery.isLoading) {
-  return <div>Loading...</div>;
+  return <ChatSkeleton />;
 }
 
 if (messagesQuery.error) {

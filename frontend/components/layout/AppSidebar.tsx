@@ -4,6 +4,7 @@ import { NewChatButton } from "@/components/session/NewChatButton";
 import { SessionCard } from "@/components/session/SessionCard";
 import { useSessions } from "@/hooks/useSessions";
 import { usePathname, useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function AppSidebar() {
   const { sessionsQuery } = useSessions();
@@ -11,11 +12,20 @@ export function AppSidebar() {
   const pathname = usePathname();
  
   if (sessionsQuery.isLoading) {
-    return (
-        <aside className="hidden md:flex w-64 border-r border-zinc-800 bg-zinc-900">
-            Loading...
-        </aside>
-    );
+  return (
+    <aside className="hidden md:flex w-72 flex-col border-r border-zinc-800 bg-zinc-900 p-4">
+      <Skeleton className="h-11 w-full rounded-lg" />
+
+      <div className="mt-6 space-y-3">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Skeleton
+            key={index}
+            className="h-16 w-full rounded-xl"
+          />
+        ))}
+      </div>
+    </aside>
+  );
 }
 
 if (sessionsQuery.error) {
