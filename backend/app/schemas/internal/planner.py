@@ -3,10 +3,31 @@ from app.core.constants import ToolStrategy
 
 
 class PlannerResponse(BaseModel):
-    plan: str = Field(description="Execution plan for answering the query.")
-    out_of_scope: bool = Field(description="Whether the query is outside the scope of company financial analysis.")
-    tool_strategy: ToolStrategy = Field(description="Which information source(s) should be used.")
+    plan: str = Field(
+        description=(
+            "Execution plan for financial requests only. "
+            "Leave empty for casual conversation or out-of-scope requests."
+        )
+    )
+
+    out_of_scope: bool = Field(
+        description=(
+            "True only when the user's request is unrelated to financial analysis "
+            "and is not part of a normal friendly conversation."
+        )
+    )
+
+    tool_strategy: ToolStrategy = Field(
+        description=(
+            "Information source required for financial requests. "
+            "Use 'none' for casual conversation or out-of-scope requests."
+        )
+    )
+
     final_output: str | None = Field(
         default=None,
-        description="Polite message returned to the user if the query is out of scope."
+        description=(
+            "Final user-facing response for casual conversation or out-of-scope "
+            "requests. Leave null for financial requests."
+        )
     )
