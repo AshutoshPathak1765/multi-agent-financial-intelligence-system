@@ -1,11 +1,11 @@
 import { MainLayout } from "@/components/layout/MainLayout";
-import { ChatContainer } from "@/components/chat/ChatContainer";
+import { EmptyState } from "@/components/chat/EmptyState";
 
 
 export default function Home() {
   return (
     <MainLayout>
-      <ChatContainer />
+      <EmptyState />
     </MainLayout>
   );
 }

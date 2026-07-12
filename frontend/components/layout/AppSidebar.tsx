@@ -5,11 +5,15 @@ import { SessionCard } from "@/components/session/SessionCard";
 import { useSessions } from "@/hooks/useSessions";
 import { usePathname, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatDistanceToNow } from "date-fns";
+import {useUser} from "@clerk/nextjs";
+
 
 export function AppSidebar() {
   const { sessionsQuery } = useSessions();
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useUser();
  
   if (sessionsQuery.isLoading) {
   return (
@@ -36,7 +40,7 @@ if (sessionsQuery.error) {
     );
 }
   return (
-    <aside className="hidden md:flex w-64 min-h-0 flex-col border-r border-zinc-800 bg-zinc-900">
+    <aside className="hidden md:flex w-80 min-h-0 flex-col border-r border-zinc-800 bg-zinc-900">
       <div className="p-4">
         <NewChatButton />
       </div>
@@ -53,7 +57,7 @@ if (sessionsQuery.error) {
           key={session.id}
           id={session.id}
           title={session.title}
-          updatedAt={new Date(session.created_at).toLocaleDateString()}
+          updatedAt={formatDistanceToNow(new Date(session.created_at + "Z"),{addSuffix: true,})}
           isActive={pathname === `/chat/${session.id}`}
           onClick={() => router.push(`/chat/${session.id}`)}
         />
@@ -63,7 +67,7 @@ if (sessionsQuery.error) {
       </div>
       <div className="border-t border-zinc-800 p-4">
     <div className="text-sm font-medium">
-      Ashutosh
+      {user?.primaryEmailAddress?.emailAddress}
     </div>
 
   <div className="text-xs text-muted-foreground">

@@ -1,7 +1,11 @@
+"use client";
 import { MobileSidebar } from "./MobileSidebar";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton,useUser } from "@clerk/nextjs";
 
 export function AppHeader() {
+
+  const { user } = useUser();
+
   return (
     <header 
     className="h-16
@@ -26,6 +30,12 @@ export function AppHeader() {
   </div>
   <div className="flex items-center gap-3">
   <UserButton />
+  <div>
+    {user?.fullName}
+  </div>
+  <div>
+    {user?.primaryEmailAddress?.emailAddress}
+  </div>
   </div>
   </header>
   );

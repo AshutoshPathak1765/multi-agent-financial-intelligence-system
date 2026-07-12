@@ -7,7 +7,9 @@ load_dotenv()
 
 
 def critic_node(state):
-    llm = init_chat_model("gpt-5.4-mini")
+    llm = init_chat_model("gpt-5.4-mini").with_config(
+    {"run_name": "Critic LLM"}
+    )
 
     structured_llm = llm.with_structured_output(CriticResponse)
 

@@ -51,3 +51,40 @@ class SessionService:
             )
 
         return session
+    
+    @staticmethod
+    async def update_title(
+        db: AsyncSession,
+        session_id: str,
+        title: str,
+    ):
+        
+        title = " ".join(title.split())
+        session = await SessionRepository.update_title(
+            db=db,
+            session_id=session_id,
+            title=title,
+        )
+
+        await db.commit()
+
+        return session
+    
+    @staticmethod
+    async def delete_session(
+        db: AsyncSession,
+        session_id: str,
+        user_id: str,
+    ):
+        session = await SessionService.validate_session_owner(
+            db=db,
+            session_id=session_id,
+            user_id=user_id,
+        )
+
+        await SessionRepository.delete_session(
+            db=db,
+            session=session,
+        )
+
+        await db.commit()

@@ -12,12 +12,16 @@ import { ChatSkeleton } from "./ChatSkeleton";
 interface ChatWindowProps {
     messagesQuery: UseQueryResult<MessageResponse[], Error>;
     isThinking: boolean;
+    streamingMessage: string
+    isStreaming: boolean
 }
 
 
 export function ChatWindow({
     messagesQuery,
     isThinking,
+    streamingMessage,
+    isStreaming,
 }: ChatWindowProps) {
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -26,7 +30,7 @@ export function ChatWindow({
   bottomRef.current?.scrollIntoView({
     behavior: messagesQuery.data?.length ? "smooth" : "auto"
   });
-}, [messagesQuery.data?.length, isThinking]);
+}, [messagesQuery.data?.length, isThinking,isStreaming,streamingMessage]);
 
   if (messagesQuery.isLoading) {
   return <ChatSkeleton />;
@@ -36,7 +40,7 @@ if (messagesQuery.error) {
   return <div>Failed to load messages.</div>;
 }
 
-if (!messagesQuery.data?.length && !isThinking) {
+if (!messagesQuery.data?.length && !isThinking && !isStreaming) {
     return <EmptyState />;
 }
   return (
@@ -53,7 +57,20 @@ if (!messagesQuery.data?.length && !isThinking) {
               />
           ))
           }
-          {isThinking && <ThinkingMessage />}
+          {
+          isStreaming ? (
+          streamingMessage ? (
+            <ChatMessage
+                role="assistant"
+                content={streamingMessage}
+            />
+        ) : (
+            <ThinkingMessage />
+        )
+    ) : isThinking ? (
+        <ThinkingMessage />
+    ) : null
+      }
       <div ref={bottomRef} />
         </div>
       </div>

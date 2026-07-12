@@ -5,43 +5,34 @@ import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { UseMutationResult } from "@tanstack/react-query";
-import type { ChatRequest, ChatResponse } from "@/lib/api/types";
 import { useEffect, useRef, useState } from "react";
 
 interface ChatInputProps {
-  sessionId: string;
-  chatMutation: UseMutationResult<
-    ChatResponse,
-    Error,
-    ChatRequest
-  >;
+  onSendMessage: (message: string) => Promise<void>;
+  isSending: boolean;
 }
 
 export function ChatInput({
-  sessionId,
-  chatMutation,
+  onSendMessage,
+  isSending,
 }: ChatInputProps) {
 
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const trimmedMessage = message.trim();
 
     if (!trimmedMessage) {
       return;
     }
 
-  chatMutation.mutate({
-    session_id: sessionId,
-    message: trimmedMessage,
-  },
-{
-  onSuccess: () => {
-    setMessage("");
-  },
-});
+  try {
+  await onSendMessage(trimmedMessage);
+  setMessage("");
+} catch (error) {
+  console.error(error);
+}
 };
 
 const handleKeyDown = (
@@ -78,7 +69,7 @@ useEffect(() => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          disabled={chatMutation.isPending}
+          disabled={isSending}
           placeholder="Ask about a company or financial report..."
           className="
               min-h-52px
@@ -93,7 +84,7 @@ useEffect(() => {
           />
             <Button size="icon" 
             onClick={handleSubmit}
-            disabled={chatMutation.isPending}
+            disabled={isSending}
              className="
               absolute
               right-3

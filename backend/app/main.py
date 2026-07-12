@@ -1,15 +1,44 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from app.api.router import router
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.router import router
 from app.models import *
 
-app = FastAPI()
+from app.core.config import CHECKPOINTER_DATABASE_URL
+from app.graph.builder import get_graph
+from app.graph.runtime import set_graph
+from app.graph.checkpointer import initialize_checkpointer
+from langsmith import Client
+
+client = Client()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    checkpointer = await initialize_checkpointer(
+        CHECKPOINTER_DATABASE_URL
+    )
+
+    compiled_graph = get_graph(
+        checkpointer=checkpointer,
+    )
+
+    set_graph(compiled_graph)
+
+    try:
+        yield
+    finally:
+        await close_checkpointer()
+
+app = FastAPI(
+    lifespan=lifespan,
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-    ],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

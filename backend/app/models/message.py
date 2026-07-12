@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey, Text, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime,UTC
 from sqlalchemy import DateTime
 from app.db.base import Base
 
@@ -31,6 +31,6 @@ class Message(Base):
         back_populates="messages"
     )
     created_at: Mapped[datetime] = mapped_column(
-    DateTime,
-    default=datetime.utcnow
+    DateTime(timezone=True),
+    default=lambda: datetime.now(UTC),
 )

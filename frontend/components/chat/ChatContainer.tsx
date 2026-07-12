@@ -2,10 +2,11 @@
 
 import { ChatInput } from "./ChatInput";
 import { ChatWindow } from "./ChatWindow";
-
+// import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useChat } from "@/hooks/useChat";
 import { useMessages } from "@/hooks/useMessages";
+import { useChatStream } from "@/hooks/useChatStream";
+import { useEffect } from "react";
 
 export function ChatContainer() {
 
@@ -13,19 +14,63 @@ export function ChatContainer() {
 
   const sessionId = params.sessionId as string;
 
-  const { chatMutation } = useChat(sessionId);
+  // const queryClient = useQueryClient();
 
-  const { messagesQuery } = useMessages(sessionId);
+  const {
+  sendMessage,
+  streamingMessage,
+  isStreaming,
+  reset,
+} = useChatStream({
+  sessionId,
+});
+
+const { messagesQuery } = useMessages(sessionId);
+
+useEffect(() => {
+  if (
+    !isStreaming &&
+    streamingMessage &&
+    messagesQuery.data?.length
+  ) {
+    const lastMessage =
+      messagesQuery.data[messagesQuery.data.length - 1];
+
+    if (lastMessage.role === "assistant") {
+      reset();
+    }
+  }
+}, [
+  isStreaming,
+  streamingMessage,
+  messagesQuery.data,
+  reset,
+]);
+
+async function handleSendMessage(message: string) {
+  try {
+    await sendMessage(message);
+
+    await messagesQuery.refetch();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+  
 
   return (
     <div className="flex h-full min-h-0 flex-col">
       <ChatWindow 
       messagesQuery={messagesQuery}
-      isThinking={chatMutation.isPending}
+      isThinking={false}
+      isStreaming={isStreaming}
+      streamingMessage={streamingMessage}
       />
       <ChatInput 
-        sessionId={sessionId}
-        chatMutation={chatMutation} />
+        onSendMessage={handleSendMessage}
+        isSending={isStreaming}
+        />
     </div>
   );
 }

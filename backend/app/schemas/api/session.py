@@ -1,10 +1,15 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 
 
 class CreateSessionRequest(BaseModel):
     title: str
+    
+    
+
+class UpdateSessionRequest(BaseModel):
+    title: str = Field(min_length=1, max_length=100) 
 
 
 class SessionResponse(BaseModel):

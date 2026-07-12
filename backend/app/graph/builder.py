@@ -3,6 +3,7 @@ from app.graph.state import AgentState
 from app.graph.nodes.planner import planner_node
 from app.graph.nodes.critic import critic_node
 from app.graph.subgraphs.executor import executor_graph
+from app.core.constants import ToolStrategy
 
 MAX_CRITIC_RETRIES = 2
 
@@ -19,13 +20,13 @@ def critic_router(state):
     return END
 
 def planner_router(state):
-    if state.get("out_of_scope", False):
+    if state.get("final_output"):
         return END
 
     return "executor"
 
 
-def get_graph():
+def get_graph(checkpointer=None):
     graph = StateGraph(AgentState)
 
     graph.add_node("planner", planner_node)
@@ -37,4 +38,6 @@ def get_graph():
     graph.add_edge("executor", "critic")
     graph.add_conditional_edges("critic", critic_router, {"executor": "executor",END: END})
 
-    return graph.compile()
+    return graph.compile(
+        checkpointer=checkpointer
+    )

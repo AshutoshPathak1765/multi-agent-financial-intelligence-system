@@ -50,3 +50,31 @@ class SessionRepository:
         )
 
         return result.scalar_one_or_none()
+    
+    @staticmethod
+    async def update_title(
+        db: AsyncSession,
+        session_id: str,
+        title: str,
+    ):
+        session = await SessionRepository.get_session_by_id(
+            db=db,
+            session_id=session_id,
+        )
+
+        if session is None:
+            return None
+
+        session.title = title
+
+        await db.flush()
+        await db.refresh(session)
+
+        return session
+    
+    @staticmethod
+    async def delete_session(
+        db: AsyncSession,
+        session: ChatSession,
+    ):
+        await db.delete(session)

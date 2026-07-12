@@ -6,7 +6,9 @@ load_dotenv()
 
 
 def planner_node(state):
-    llm = init_chat_model("gpt-5.4-mini")
+    llm = init_chat_model("gpt-5.4-mini").with_config(
+    {"run_name": "Planner LLM"}
+    )
 
     query = state["messages"][-1].content
 
@@ -231,5 +233,5 @@ def planner_node(state):
     structured_llm = llm.with_structured_output(PlannerResponse)
     
     response = structured_llm.invoke(prompt)
-    print(response.model_dump())
+    # print(response.model_dump())
     return response.model_dump()
