@@ -2,7 +2,7 @@
 
 import { ChatInput } from "./ChatInput";
 import { ChatWindow } from "./ChatWindow";
-// import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useMessages } from "@/hooks/useMessages";
 import { useChatStream } from "@/hooks/useChatStream";
@@ -14,7 +14,7 @@ export function ChatContainer() {
 
   const sessionId = params.sessionId as string;
 
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const {
   sendMessage,
@@ -51,7 +51,12 @@ async function handleSendMessage(message: string) {
   try {
     await sendMessage(message);
 
-    await messagesQuery.refetch();
+    await Promise.all([
+      messagesQuery.refetch(),
+      queryClient.invalidateQueries({
+        queryKey: ["sessions"],
+      }),
+    ]);
   } catch (error) {
     console.error(error);
   }

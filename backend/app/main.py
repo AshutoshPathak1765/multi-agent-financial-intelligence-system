@@ -9,10 +9,11 @@ from app.models import *
 from app.core.config import CHECKPOINTER_DATABASE_URL
 from app.graph.builder import get_graph
 from app.graph.runtime import set_graph
-from app.graph.checkpointer import initialize_checkpointer
-from langsmith import Client
+from app.graph.checkpointer import (
+    initialize_checkpointer,
+    close_checkpointer,
+)
 
-client = Client()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

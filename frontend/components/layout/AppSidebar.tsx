@@ -14,6 +14,12 @@ export function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useUser();
+
+  const displayName =
+  user?.fullName ||
+  user?.firstName ||
+  user?.primaryEmailAddress?.emailAddress ||
+  "User";
  
   if (sessionsQuery.isLoading) {
   return (
@@ -67,7 +73,7 @@ if (sessionsQuery.error) {
       </div>
       <div className="border-t border-zinc-800 p-4">
     <div className="text-sm font-medium">
-      {user?.primaryEmailAddress?.emailAddress}
+      {displayName}
     </div>
 
   <div className="text-xs text-muted-foreground">

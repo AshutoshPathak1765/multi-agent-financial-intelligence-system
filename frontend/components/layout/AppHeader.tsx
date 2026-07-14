@@ -6,6 +6,12 @@ export function AppHeader() {
 
   const { user } = useUser();
 
+  const displayName =
+  user?.fullName ||
+  user?.firstName ||
+  user?.primaryEmailAddress?.emailAddress ||
+  "User";
+
   return (
     <header 
     className="h-16
@@ -31,10 +37,7 @@ export function AppHeader() {
   <div className="flex items-center gap-3">
   <UserButton />
   <div>
-    {user?.fullName}
-  </div>
-  <div>
-    {user?.primaryEmailAddress?.emailAddress}
+    {displayName}
   </div>
   </div>
   </header>

@@ -16,11 +16,9 @@ class LangGraphService:
         config = {
             "configurable": {
                 "thread_id": session_id,
-                "user_id": user_id,
             },
             "metadata": {
                 "session_id": session_id,
-                "user_id": user_id,
             },
             "run_name": "Financial Chat",
         }
@@ -56,11 +54,9 @@ class LangGraphService:
         config = {
             "configurable": {
                 "thread_id": session_id,
-                "user_id": user_id,
             },
             "metadata": {
                 "session_id": session_id,
-                "user_id": user_id,
             },
             "run_name": "Financial Chat",
         }
