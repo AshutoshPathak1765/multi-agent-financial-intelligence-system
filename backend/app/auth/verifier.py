@@ -12,6 +12,7 @@ clerk = Clerk(
 options = AuthenticateRequestOptions(
     authorized_parties=[
         "http://localhost:3000",
+        "https://multi-agent-financial-intelligence.vercel.app",
     ]
 )
 
