@@ -123,7 +123,7 @@ async def critic_node(state):
     - explain what should be improved
     """
 
-    response = structured_llm.ainvoke(prompt)
+    response = await structured_llm.ainvoke(prompt)
 
     return {
         "critic_feedback": response.feedback,

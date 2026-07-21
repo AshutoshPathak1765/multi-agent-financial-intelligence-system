@@ -232,6 +232,6 @@ async def planner_node(state):
     
     structured_llm = llm.with_structured_output(PlannerResponse)
     
-    response = structured_llm.ainvoke(prompt)
+    response = await structured_llm.ainvoke(prompt)
     # print(response.model_dump())
     return response.model_dump()
