@@ -111,7 +111,7 @@ def decision_node(state):
     *state["messages"],
     ]
     
-    response = llm_with_tools.invoke(messages)
+    response = llm_with_tools.ainvoke(messages)
     
     return {"messages": [response], "steps": state.get("steps", 0) + 1}
 

@@ -71,6 +71,9 @@ class LangGraphService:
             config=config,
             version="v2",
         ):
+            print("=" * 80)
+            print(event["event"])
+            print(event.get("metadata"))
 
             event_name = event.get("event")
             node = event.get("metadata", {}).get("langgraph_node")
@@ -78,9 +81,12 @@ class LangGraphService:
             # Normal financial-response streaming
             if (
                 event_name == "on_chat_model_stream"
-                and node == "decision"
             ):
                 chunk = event["data"]["chunk"].content
+                print("=" * 80)
+                print(f"NODE: {node}")
+                print(f"EVENT: {event_name}")
+                print(f"CHUNK: {repr(chunk)}")
 
                 if chunk:
                     streamed_llm = True
@@ -89,8 +95,10 @@ class LangGraphService:
             # Planner-only response (Hi, Hello, Thanks...)
             elif (
                 event_name == "on_chain_end"
-                and node == "planner"
             ):
+                print("=" * 80)
+                print(f"CHAIN END NODE: {node}")
+                print(event["data"])
                 output = event["data"].get("output")
 
                 if (
