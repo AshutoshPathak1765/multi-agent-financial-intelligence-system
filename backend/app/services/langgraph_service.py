@@ -63,56 +63,75 @@ class LangGraphService:
 
         streamed_llm = False
 
-        async for event in graph.astream_events(
-            {
-                "messages": messages,
-                "steps": 0,
-            },
-            config=config,
-            version="v2",
-        ):
+        try:
 
-            event_name = event.get("event")
-            node = event.get("metadata", {}).get("langgraph_node")
-
-            # -------------------------------------------------
-            # DEBUG: Print every planner event
-            # -------------------------------------------------
-            if node == "planner":
-                print("=" * 80)
-                print(f"EVENT : {event_name}")
-                print(f"NODE  : {node}")
-                print(f"DATA  : {event.get('data')}")
-                print("=" * 80)
-
-            # -------------------------------------------------
-            # Normal LLM streaming (Executor only)
-            # -------------------------------------------------
-            if (
-                event_name == "on_chat_model_stream"
-                and node == "decision"
+            async for event in graph.astream_events(
+                {
+                    "messages": messages,
+                    "steps": 0,
+                },
+                config=config,
+                version="v2",
             ):
-                chunk = event["data"]["chunk"].content
 
-                if chunk:
-                    streamed_llm = True
-                    yield chunk
+                try:
 
-            # -------------------------------------------------
-            # Planner fallback
-            # -------------------------------------------------
-            elif (
-                event_name == "on_chain_end"
-                and node == "planner"
-            ):
-                output = event["data"].get("output")
+                    event_name = event.get("event")
+                    node = event.get("metadata", {}).get("langgraph_node")
 
-                print("Planner Output Type:", type(output))
-                print("Planner Output:", repr(output))
+                    # -------------------------------------------------
+                    # Stream Executor responses
+                    # -------------------------------------------------
+                    if (
+                        event_name == "on_chat_model_stream"
+                        and node == "decision"
+                    ):
 
-                if (
-                    not streamed_llm
-                    and isinstance(output, dict)
-                    and output.get("final_output")
-                ):
-                    yield output["final_output"]
+                        chunk = event.get("data", {}).get("chunk")
+
+                        if chunk and chunk.content:
+                            streamed_llm = True
+                            yield chunk.content
+
+                    # -------------------------------------------------
+                    # Planner-only responses
+                    # -------------------------------------------------
+                    elif (
+                        event_name == "on_chat_model_end"
+                        and node == "planner"
+                        and not streamed_llm
+                    ):
+
+                        ai_message = event.get("data", {}).get("output")
+
+                        if ai_message is None:
+                            continue
+
+                        planner_response = (
+                            ai_message.additional_kwargs.get("parsed")
+                        )
+
+                        if planner_response is None:
+                            continue
+
+                        final_output = getattr(
+                            planner_response,
+                            "final_output",
+                            None,
+                        )
+
+                        if final_output:
+                            yield final_output
+
+                except Exception:
+                    logger.exception(
+                        "Error while processing LangGraph event."
+                    )
+
+        except Exception:
+            logger.exception(
+                "Streaming failed for session %s",
+                session_id,
+            )
+
+            raise

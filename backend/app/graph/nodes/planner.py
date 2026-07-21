@@ -5,7 +5,7 @@ from app.schemas.internal.planner import PlannerResponse
 load_dotenv()
 
 
-def planner_node(state):
+async def planner_node(state):
     llm = init_chat_model("gpt-5.4-mini").with_config(
     {"run_name": "Planner LLM"}
     )
@@ -232,6 +232,6 @@ def planner_node(state):
     
     structured_llm = llm.with_structured_output(PlannerResponse)
     
-    response = structured_llm.invoke(prompt)
+    response = structured_llm.ainvoke(prompt)
     # print(response.model_dump())
     return response.model_dump()

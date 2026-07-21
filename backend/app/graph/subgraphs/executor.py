@@ -14,7 +14,7 @@ load_dotenv()
 MAX_STEPS = 4
 
 
-def decision_node(state):
+async def decision_node(state):
     llm = init_chat_model("gpt-5.4-mini").with_config(
     {"run_name": "Decision LLM"}
     )

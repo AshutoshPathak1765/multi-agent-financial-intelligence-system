@@ -6,7 +6,7 @@ from app.schemas.api.critic import CriticResponse
 load_dotenv()
 
 
-def critic_node(state):
+async def critic_node(state):
     llm = init_chat_model("gpt-5.4-mini").with_config(
     {"run_name": "Critic LLM"}
     )
@@ -123,7 +123,7 @@ def critic_node(state):
     - explain what should be improved
     """
 
-    response = structured_llm.invoke(prompt)
+    response = structured_llm.ainvoke(prompt)
 
     return {
         "critic_feedback": response.feedback,
