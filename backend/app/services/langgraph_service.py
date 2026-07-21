@@ -100,6 +100,8 @@ class LangGraphService:
                 print(f"CHAIN END NODE: {node}")
                 print(event["data"])
                 output = event["data"].get("output")
+                print(type(output))
+                print(repr(output))
 
                 if (
                     not streamed_llm
